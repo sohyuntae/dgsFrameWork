@@ -1,0 +1,18 @@
+type groupQuery {
+    getGroupList(groupKey: Int): [group]
+    getGroupInfo(groupKey: Int): group
+}
+
+type groupMutation {
+    addGroupInfo(group: addGroup): [group]
+}
+
+type group {
+    groupKey: Int
+    groupName: String
+}
+
+input addGroup {
+    groupKey: Int!
+    groupName: String!
+}

@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: dgs-example-java
+server:
+  port: 9090
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  output:
+    ansi:
+      enabled: always

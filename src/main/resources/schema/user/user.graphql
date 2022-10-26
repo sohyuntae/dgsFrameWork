@@ -1,0 +1,21 @@
+# 유저 정보
+type UserInfo {
+    # User ID
+    uid: String
+    # User PW
+    uPw: String
+    # User Name
+    userName: String
+    # User Email
+    userEmail: String
+    # User Phone
+    userPhone: Int
+}
+
+input addUserInfo {
+    uid: String!
+    uPw: String!
+    userName: String!
+    userEmail: String
+    userPhone: Int
+}
