@@ -1,0 +1,33 @@
+plugins {
+    id 'org.springframework.boot' version '2.7.5'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'java'
+    id "com.netflix.dgs.codegen" version "5.4.0"
+}
+
+group = 'com.dgs'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    /* netflix */
+    implementation(platform('com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:5.3.0'))
+    implementation "com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter"
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.projectlombok:lombok:1.18.22'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+generateJava {
+   schemaPaths = ["${projectDir}/src/main/resources/schema"] // List of directories containing schema files
+   packageName = 'com.dgs.dgsframework' // The package name to use to generate sources
+   generateClient = true // Enable generating the type safe query API
+}
