@@ -1,10 +1,6 @@
 type Query {
     # 테스트
     shows(titleFilter: String): [Show]
-    # 유저 정보 리스트
-    getUserList(uid: String): [UserInfo]
-    # 유저 단일 정보
-    getUserInfo(uid: String): UserInfo
 }
 
 type Show {

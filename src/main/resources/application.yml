@@ -1,14 +1,20 @@
 spring:
   application:
     name: dgs-example-java
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      jdbc-url: jdbc:mariadb://192.168.100.167:3306/nh80db?characterEncoding=UTF-8&serverTimezone=UTC
+      username: root
+      password: izex_0329
+      driver-class-name: org.mariadb.jdbc.Driver
+      pool-name: hikari-cp
+      maximum-pool-size: 100
+      minimum-idle: 2
 server:
   port: 9090
-
----
-spring:
-  config:
-    activate:
-      on-profile: local
-  output:
-    ansi:
-      enabled: always
