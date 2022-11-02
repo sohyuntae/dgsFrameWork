@@ -1,0 +1,112 @@
+scalar DateTime
+"모듈 정보"
+enum Module {
+    SET
+    SAM
+    OAM
+    RHM
+    ESM
+    IPM
+}
+
+extend type Mutation {
+    """
+    사용자 신청 관련 Mutation
+    """
+    addApplication(
+        addApplicationBasic: applicationBasic
+        addApplicationDetail: applicationDetail
+        addAddition: [addition]
+        addApproval: [approval]
+        addReference: [reference]
+    ): String
+}
+
+"공통 신청"
+input applicationBasic {
+    "신청키"
+    srKey: ID
+    "신청 제목"
+    applicationTitle: String!
+    "모듈_그룹코드"
+    CGC_CD: String!
+    "모듈_상세코드"
+    CDC_CD: String!
+    "신청 상세 코드"
+    applicationStatusCode: String!
+    "등록자 구분 코드"
+    registrarTypeCode: String!
+    "등록자"
+    registrarKey: Int!
+}
+
+"""
+각 모듈별 세부 정보
+(일단 SET만 넣어놓음.)
+"""
+input applicationDetail {
+    module: Module
+    setInfo: setDetailInfo
+}
+
+"SET 정보"
+input setDetailInfo {
+    "시스템키"
+    siKey: Int
+    "시스템 소유자 키(guKey)"
+    siUserKey: Int
+    "시작일(연장일자)"
+    applicationStartDate: DateTime
+    "종료일"
+    applicationEndDate: DateTime
+}
+
+"결재 정보"
+input approval {
+    "결재자 구분 코드"
+    applicantDivisionCode: String
+    "결재자키"
+    applicantKey: Int
+    "결재단계"
+    approvalStep: Int
+    "결재사유"
+    approvalReason: String
+    "결재상태코드"
+    approvalResultCode: String
+}
+
+"추가 정보"
+input addition {
+    "CGC_CD"
+    etcGroupKey: String
+    "CDC_CD"
+    etcKey: String
+    etcName: String
+    etcType: String
+    etcValue: String
+    etcValueList: String
+}
+
+"참조 정보"
+input reference {
+    "참조자키"
+    referenceKey: Int
+    "참조자 구븐 코드"
+    referenceDivisionCode: String
+}
+
+"신청 파일"
+input approvalFile {
+    "파일키"
+    fileKey: ID
+    "파일명"
+    fileName: String!
+    "파일경로"
+    filePath: String!
+    "파일크기"
+    fileSize: Int
+}
+
+
+
+

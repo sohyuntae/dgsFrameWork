@@ -1,7 +1,4 @@
-schema {
-    query: userQuery
-}
-type userQuery {
+extend type Query {
     # 유저 정보 리스트
     getUserList(uid: String): [UserInfo]
     # 유저 단일 정보

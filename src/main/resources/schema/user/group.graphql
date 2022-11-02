@@ -1,4 +1,4 @@
-type groupQuery {
+extend type Query {
     getGroupList(groupKey: Int): [group]
     getGroupInfo(groupKey: Int): group
 }
