@@ -34,6 +34,14 @@ input applicationBasic {
     CDC_CD: String!
     "신청 상세 코드"
     applicationStatusCode: String!
+    "결재방법 (NH_0162 1,자가결재 2,결재자선택 결재 3,관리자선택 결재)"
+    paymentMethodCode: String
+    "처리방법 (NH_0164 1,자동처리(시스템 자동처리) 2,수동처리(관리자 수동처리))"
+    processingMethodCode: String
+    "신청자 구분 코드"
+    requestUserTypeCode: Int
+    "신청자키"
+    requestUserKey: Int
     "등록자 구분 코드"
     registrarTypeCode: String!
     "등록자"
@@ -106,7 +114,5 @@ input approvalFile {
     "파일크기"
     fileSize: Int
 }
-
-
 
 

@@ -1,24 +1,22 @@
 package com.dgs.dgsframework;
 
-import com.dgs.dgsframework.domain.Qusr_info;
-import com.dgs.dgsframework.domain.usr_info;
+import com.dgs.dgsframework.service.applicationDetailService;
 import com.dgs.dgsframework.types.*;
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsMutation;
-import com.netflix.graphql.dgs.DgsQuery;
 import com.netflix.graphql.dgs.InputArgument;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @DgsComponent
 @RequiredArgsConstructor
 public class applicationDatafetcher {
 
-    private final JPAQueryFactory queryFactory;
+    private final com.dgs.dgsframework.service.applicationService applicationService;
+    private final com.dgs.dgsframework.service.applicationDetailService applicationDetailService;
 
     @DgsMutation
     @Transactional
@@ -30,6 +28,14 @@ public class applicationDatafetcher {
             @InputArgument List<reference> addReference
     ) {
 
-        return "성공~!";
+        // 공통
+        Long applicationKey = applicationService.saveCommonApplication();
+        // 상세
+        applicationDetailService.saveApplicationDetailItem();
+        // 처리
+
+
+
+        return "";
     }
 }
