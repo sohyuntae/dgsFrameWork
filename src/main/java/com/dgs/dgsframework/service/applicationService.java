@@ -1,9 +1,9 @@
 package com.dgs.dgsframework.service;
 
-import com.dgs.dgsframework.types.*;
-
-import java.util.List;
+import com.dgs.dgsframework.types.applicationBasic;
 
 public interface applicationService {
-    Long saveCommonApplication();
+    Long saveCommonApplication(applicationBasic addApplicationBasic);
+
+    boolean saveApplicationApproval();
 }
