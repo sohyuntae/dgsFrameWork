@@ -18,8 +18,8 @@ public class applicationServiceSAM implements applicationDetailService {
     }
 
     @Override
-    public boolean saveApplicationDetailItem(applicationDetail addApplicationDetail) {
-        log.info("saveApplicationDetailItem SAM");
+    public boolean saveApplicationDetailItem(Long applicationKey, applicationDetail addApplicationDetail) {
+        log.info("SAM 상세 내용 저장.");
 
         return false;
     }

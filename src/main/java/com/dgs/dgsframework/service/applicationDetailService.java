@@ -6,7 +6,7 @@ import com.dgs.dgsframework.types.applicationDetail;
 public interface applicationDetailService {
     boolean isModuleCheck(String module);
     // 신청 상세 저장
-    boolean saveApplicationDetailItem(applicationDetail addApplicationDetail);
+    boolean saveApplicationDetailItem(Long applicationKey, applicationDetail addApplicationDetail);
     // 상세 결재 저장(승인)
     boolean saveApplicationApprovalDetailItem();
     // 상세 결재 저장(반려)

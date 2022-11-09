@@ -5,7 +5,9 @@ import com.dgs.dgsframework.service.*;
 import com.dgs.dgsframework.types.*;
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsMutation;
+import com.netflix.graphql.dgs.DgsQuery;
 import com.netflix.graphql.dgs.InputArgument;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +43,7 @@ public class applicationDatafetcher {
 
     @DgsMutation
     @protocol
+    @Transactional
     public String addApplication(
             @InputArgument applicationBasic addApplicationBasic,
             @InputArgument applicationDetail addApplicationDetail,
@@ -55,16 +58,18 @@ public class applicationDatafetcher {
         applicationDetailService
                 .stream()
                 .filter(item -> item.isModuleCheck(addApplicationDetail.getModule().name()))
-                .forEach(service -> service.saveApplicationDetailItem(addApplicationDetail));
+                .forEach(service -> service.saveApplicationDetailItem(applicationKey, addApplicationDetail));
+
+        // 결재 및 참조 내용 저장.
+        applicationService.saveApprovalInfo(applicationKey, addApproval, addReference);
 
         // 결재
-        applicationService.saveApplicationApproval();
 
         // 처리
-        applicationProcessService
+        /*applicationProcessService
                 .stream()
                 .filter(item -> item.isProcessCheck(addApplicationDetail.getModule().name()))
-                .forEach(service -> service.saveProcess());
+                .forEach(service -> service.saveProcess());*/
 
         return "성공";
     }

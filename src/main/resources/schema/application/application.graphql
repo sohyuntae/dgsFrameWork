@@ -115,4 +115,14 @@ input approvalFile {
     fileSize: Int
 }
 
+"결재 DTO"
+type approvalInfo {
+    "신청키"
+    applicationKey: Int
+    "결재 타입"
+    approvalWayCode: String
+    "결재 정보"
+    approvalInfo: [String]
+}
+
 

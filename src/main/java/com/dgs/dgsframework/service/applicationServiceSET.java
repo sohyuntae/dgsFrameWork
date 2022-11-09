@@ -18,8 +18,8 @@ public class applicationServiceSET implements applicationDetailService {
     }
 
     @Override
-    public boolean saveApplicationDetailItem(applicationDetail addApplicationDetail) {
-        log.info("saveApplicationDetailItem SET");
+    public boolean saveApplicationDetailItem(Long applicationKey, applicationDetail addApplicationDetail) {
+        log.info("SET 상세 내용 저장");
         return false;
     }
 
