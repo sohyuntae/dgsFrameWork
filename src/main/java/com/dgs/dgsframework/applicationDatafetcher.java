@@ -71,6 +71,6 @@ public class applicationDatafetcher {
                 .filter(item -> item.isProcessCheck(addApplicationDetail.getModule().name()))
                 .forEach(service -> service.saveProcess());*/
 
-        return "성공";
+       return "성공";
     }
 }

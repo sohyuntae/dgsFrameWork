@@ -1,8 +1,6 @@
 package com.dgs.dgsframework.service;
 
 import com.dgs.dgsframework.annotation.approvalProtocol;
-import com.dgs.dgsframework.domain.Qstm_info;
-import com.dgs.dgsframework.domain.QtestApplication;
 import com.dgs.dgsframework.domain.testApplication;
 import com.dgs.dgsframework.repository.testApplicationRepository;
 import com.dgs.dgsframework.types.applicationBasic;
@@ -13,7 +11,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;

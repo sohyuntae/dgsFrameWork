@@ -13,10 +13,6 @@ public class approvalServiceImpl implements approvalService {
 
     private final com.dgs.dgsframework.repository.testApplicationRepository testApplicationRepository;
 
-    public approvalServiceImpl() {
-        testApplicationRepository = null;
-    }
-
     public approvalServiceImpl(com.dgs.dgsframework.repository.testApplicationRepository testApplicationRepository) {
         this.testApplicationRepository = testApplicationRepository;
     }
@@ -33,18 +29,15 @@ public class approvalServiceImpl implements approvalService {
     }
 
     // 신청 결재 저장 (결재자 : 사용자)
-    @Transactional
     public boolean saveApplicationApprovalByUserKey() {
-        try {
-            log.info("사용자 결재 저장");
-            testApplication insertData = new testApplication();
-            insertData.setAppName("test");
-            testApplicationRepository.save(insertData);
-            throw new Exception();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+        log.info("사용자 결재 저장");
+        testApplication insertData = new testApplication();
+        insertData.setAppName("test");
+        testApplicationRepository.save(insertData);
+
+        // 실패시 이전 신청 내용까지 트랜잭션으로 묶임.
+        // throw new RuntimeException();
+        return false;
     }
 
     // 신청 결재 저장 (결재자 : 관리자)
