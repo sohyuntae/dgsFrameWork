@@ -23,7 +23,6 @@ dependencies {
     implementation "com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter"
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.projectlombok:lombok:1.18.22'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     /* scalar 사용가능하게 해주는 라이브러리. */
     implementation 'com.netflix.graphql.dgs:graphql-dgs-extended-scalars'
@@ -46,6 +45,11 @@ dependencies {
     /* Lombok */
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+
+    /* Test */
+    testImplementation("com.netflix.graphql.dgs:graphql-dgs-client")
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation("org.springframework.boot:spring-boot-starter-webflux")
 }
 
 tasks.named('test') {

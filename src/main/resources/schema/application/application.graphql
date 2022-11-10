@@ -125,4 +125,14 @@ type approvalInfo {
     approvalInfo: [String]
 }
 
+"처리 DTO"
+type processInfo {
+    "신청키"
+    applicationKey: Int
+    "처리 타입"
+    processWayCode: String
+    "처리 정보"
+    processInfo: [String]
+}
+
 

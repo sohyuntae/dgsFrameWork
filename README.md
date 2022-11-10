@@ -19,8 +19,11 @@ netflix DGS FramWork Test
 
 결재
  ㄴ 자가 결재
- ㄴ 사용자 결재
- ㄴ 관리자 결재
+ ㄴ 사용자 결재 (승인 / 반려)
+ ㄴ 관리자 결재 (승인 / 반려)
+
+반려가 발생한 경우 기존 로직
+ - 신청 정보의 상태값 반려로 변경.
 
 참조자
  ㄴ 참조자 저장.
@@ -34,3 +37,17 @@ netflix DGS FramWork Test
 
 -- 처리시, 자동 처리인 경우 자동 처리 프로세스로 이동 아닌 경우 그냥 상태값 처리.
 
+변경 로직의 경우 SAM, ESM 기준으로 조회.
+
+
+test
+
+mutation {
+  addApplication(
+    addApplicationBasic: {applicationTitle: "test", CGC_CD: "1", CDC_CD: "1", applicationStatusCode: "1", registrarTypeCode: "1", registrarKey: 1}
+    addApplicationDetail: {module: SAM}
+    addAddition: []
+    addApproval: []
+    addReference: []
+  )
+}

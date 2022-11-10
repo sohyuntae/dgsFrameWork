@@ -1,6 +1,7 @@
 package com.dgs.dgsframework.aspect;
 
 import com.dgs.dgsframework.types.approvalInfo;
+import com.dgs.dgsframework.types.processInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -24,10 +25,10 @@ public class aopAspect {
     }
 
     // exception이 발생하지 않고 정상적으로 실행된 경우, 실행.
-    @AfterReturning(value = "@annotation(com.dgs.dgsframework.annotation.approvalProtocol)", returning = "approvalInfo")
+    @AfterReturning(value = "@annotation(com.dgs.dgsframework.annotation.approvalMessage)", returning = "approvalInfo")
     public void approvalProtocol(approvalInfo approvalInfo) {
         log.info("approval Start");
-        log.info("protocol data : " + approvalInfo);
+        log.info("approval message data : " + approvalInfo);
 
         if ("1".equals(approvalInfo.getApprovalWayCode())) {
             log.info("자가 결재");
@@ -35,5 +36,17 @@ public class aopAspect {
         } else {
             log.info("결재x");
         }
+        log.info("approval End");
+    }
+
+    // exception이 발생하지 않고 정상적으로 실행된 경우, 실행.
+    @AfterReturning(value = "@annotation(com.dgs.dgsframework.annotation.processMessage)", returning = "processInfo")
+    public void processProtocol(processInfo processInfo) {
+        log.info("process Start");
+        log.info("process message data : " + processInfo);
+
+        log.info("자동 처리");
+
+        log.info("process End");
     }
 }

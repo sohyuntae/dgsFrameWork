@@ -1,6 +1,6 @@
 package com.dgs.dgsframework.service;
 
-import com.dgs.dgsframework.annotation.approvalProtocol;
+import com.dgs.dgsframework.annotation.approvalMessage;
 import com.dgs.dgsframework.domain.testApplication;
 import com.dgs.dgsframework.repository.testApplicationRepository;
 import com.dgs.dgsframework.types.applicationBasic;
@@ -35,7 +35,7 @@ public class applicationServiceImpl implements applicationService {
     }
 
     @Override
-    @approvalProtocol
+    @approvalMessage
     public approvalInfo saveApprovalInfo(Long applicationKey, List<approval> addApproval, List<reference> addReference) {
         log.info("결재 정보 저장");
         log.info("참조자 정보 저장");
