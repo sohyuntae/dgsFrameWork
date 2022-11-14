@@ -2,6 +2,7 @@ package com.dgs.dgsframework.aspect;
 
 import com.dgs.dgsframework.types.approvalInfo;
 import com.dgs.dgsframework.types.processInfo;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -10,12 +11,9 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Aspect
 @Component
+@RequiredArgsConstructor
 public class aopAspect {
     private final com.dgs.dgsframework.service.approvalService approvalService;
-
-    public aopAspect(com.dgs.dgsframework.service.approvalService approvalService) {
-        this.approvalService = approvalService;
-    }
 
     // exception이 발생하지 않고 정상적으로 실행된 경우, 실행.
     @AfterReturning(value = "@annotation(com.dgs.dgsframework.annotation.protocol)", returning = "protocolData")

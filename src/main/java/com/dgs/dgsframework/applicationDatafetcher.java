@@ -42,7 +42,8 @@ public class applicationDatafetcher {
             @InputArgument applicationDetail addApplicationDetail,
             @InputArgument List<addition> addAddition,
             @InputArgument List<approval> addApproval,
-            @InputArgument List<reference> addReference
+            @InputArgument List<reference> addReference,
+            @InputArgument List<approvalFile> addApprovalFile
     ) {
         // 신청 공통
         Long applicationKey = applicationService.saveCommonApplication(addApplicationBasic);
@@ -54,7 +55,7 @@ public class applicationDatafetcher {
                 .forEach(service -> service.saveApplicationDetailItem(applicationKey, addApplicationDetail));
 
         // 결재 및 참조 내용 저장.
-        applicationService.saveApprovalInfo(applicationKey, addApproval, addReference);
+        applicationService.saveApprovalInfo(applicationKey, addApproval, addReference, addApprovalFile);
 
        return "성공";
     }

@@ -1,4 +1,5 @@
 scalar DateTime
+scalar Long
 "모듈 정보"
 enum Module {
     SET
@@ -19,33 +20,38 @@ extend type Mutation {
         addAddition: [addition]
         addApproval: [approval]
         addReference: [reference]
+        addApprovalFile: [approvalFile]
     ): String
 }
 
 "공통 신청"
 input applicationBasic {
     "신청키"
-    srKey: ID
+    srKey: Long
     "신청 제목"
     applicationTitle: String!
     "모듈_그룹코드"
-    CGC_CD: String!
+    moduleCode: String!
     "모듈_상세코드"
-    CDC_CD: String!
-    "신청 상세 코드"
+    categoryCode: String!
+    "신청 사유"
+    applicationContent: String
+    "신청 상태코드 (NH_0132 1: 등록, 2:취소, 3:삭제)"
     applicationStatusCode: String!
     "결재방법 (NH_0162 1,자가결재 2,결재자선택 결재 3,관리자선택 결재)"
     paymentMethodCode: String
     "처리방법 (NH_0164 1,자동처리(시스템 자동처리) 2,수동처리(관리자 수동처리))"
     processingMethodCode: String
     "신청자 구분 코드"
-    requestUserTypeCode: Int
+    requestUserTypeCode: String
     "신청자키"
-    requestUserKey: Int
+    requestUserKey: Long
     "등록자 구분 코드"
     registrarTypeCode: String!
     "등록자"
-    registrarKey: Int!
+    registrarKey: Long!
+    "콘솔에서의 등록 여부"
+    manualRegYn: String
 }
 
 """
@@ -60,9 +66,9 @@ input applicationDetail {
 "SET 정보"
 input setDetailInfo {
     "시스템키"
-    siKey: Int
+    siKey: Long
     "시스템 소유자 키(guKey)"
-    siUserKey: Int
+    siUserKey: Long
     "시작일(연장일자)"
     applicationStartDate: DateTime
     "종료일"
@@ -74,9 +80,9 @@ input approval {
     "결재자 구분 코드"
     applicantDivisionCode: String
     "결재자키"
-    applicantKey: Int
+    applicantKey: Long
     "결재단계"
-    approvalStep: Int
+    approvalStep: Long
     "결재사유"
     approvalReason: String
     "결재상태코드"
@@ -98,7 +104,7 @@ input addition {
 "참조 정보"
 input reference {
     "참조자키"
-    referenceKey: Int
+    referenceKey: Long
     "참조자 구븐 코드"
     referenceDivisionCode: String
 }
@@ -108,31 +114,42 @@ input approvalFile {
     "파일키"
     fileKey: ID
     "파일명"
-    fileName: String!
+    fileName: String
     "파일경로"
-    filePath: String!
+    filePath: String
     "파일크기"
-    fileSize: Int
+    fileSize: Long
 }
 
 "결재 DTO"
 type approvalInfo {
     "신청키"
-    applicationKey: Int
-    "결재 타입"
+    applicationKey: Long
+    "결재 타입 (1: 자가 결재)"
     approvalWayCode: String
-    "결재 정보"
-    approvalInfo: [String]
+    "콘솔 관리자 등록"
+    manualRegYn: String
+    "신청자 구분 코드"
+    requestUserTypeCode: String
+    "신청자키"
+    requestUserKey: Long
+}
+
+type saveApprovalInfo {
+    "신청키"
+    applicationKey: [Long]
+    "결재 상태값"
+    approvalStatusCode: String
+    "결재 내용"
+    approvalReason: String
 }
 
 "처리 DTO"
 type processInfo {
     "신청키"
-    applicationKey: Int
+    applicationKey: Long
     "처리 타입"
     processWayCode: String
-    "처리 정보"
-    processInfo: [String]
 }
 
 

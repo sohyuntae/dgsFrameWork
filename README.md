@@ -51,3 +51,42 @@ mutation {
     addReference: []
   )
 }
+
+--- 호출쪽 --- 
+private final GraphQLWebClient graphQLWebClient;
+
+@GraphQLMutation
+public executeQueryResult API_saveApplicationTest () {
+    GraphQLRequest request = GraphQLRequest.builder().query("""
+            mutation {
+              addApplication(
+                addApplicationBasic: {applicationTitle: "test", moduleCode: "1", categoryCode: "1", applicationStatusCode: "1", registrarTypeCode: "1", registrarKey: 1}
+                addApplicationDetail: {module: SET}
+                addAddition: []
+                addApproval: []
+                addReference: []
+              )
+            }
+            """).build();
+    GraphQLResponse response = graphQLWebClient.post(request).block();
+
+    response.get("addApplication", String.class);
+
+    System.out.println(response.get("addApplication", String.class));
+
+    GraphQLRequest request2 = GraphQLRequest.builder().query("""
+            query {
+              shows {
+                title
+                releaseYear
+              }
+            }
+            """).build();
+    GraphQLResponse response2 = graphQLWebClient.post(request2).block();
+
+    // response2.get("shows", String.class);
+
+    System.out.println(response2.get("shows", List.class));
+
+    return new executeQueryResult();
+}

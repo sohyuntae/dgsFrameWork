@@ -2,8 +2,8 @@ package com.dgs.dgsframework.domain.application;
 
 import com.dgs.dgsframework.domain.cmn_grp_code;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
