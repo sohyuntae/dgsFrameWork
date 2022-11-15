@@ -138,6 +138,8 @@ type approvalInfo {
 type saveApprovalInfo {
     "신청키"
     applicationKey: [Long]
+    "대결자 여부 체크"
+    adminCheckYn: String
     "결재 상태값"
     approvalStatusCode: String
     "결재 내용"
@@ -147,7 +149,7 @@ type saveApprovalInfo {
 "처리 DTO"
 type processInfo {
     "신청키"
-    applicationKey: Long
+    applicationKey: [Long]
     "처리 타입"
     processWayCode: String
 }

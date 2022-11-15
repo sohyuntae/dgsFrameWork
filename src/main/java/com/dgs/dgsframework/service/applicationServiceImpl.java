@@ -105,7 +105,7 @@ public class applicationServiceImpl implements applicationService {
                 .where(Qsgn_rqst.sgn_rqst.srKey.eq(applicationKey))
                 .fetchFirst();
 
-        // 임시 내용저장.
+        // 결재 내용 저장 (추가 작업 필요할수도 있음.)
         approvalInfo approvalInfo = new approvalInfo();
         approvalInfo.setApplicationKey(applicationKey);
         approvalInfo.setApprovalWayCode(requestInfo.getSgnWayCd());

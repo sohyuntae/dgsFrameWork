@@ -57,6 +57,7 @@ public class approvalServiceImpl implements approvalService {
     }
 
     // 신청 결재 저장 (결재자 : 사용자)
+    // key 는 다중으로 받는다. (여러개 선택으로 들어올수 있음.)
     public processInfo saveApplicationApprovalByUserKey(saveApprovalInfo saveApproval, Long adminKey) {
         log.info("사용자 결재 저장");
 
@@ -73,6 +74,7 @@ public class approvalServiceImpl implements approvalService {
                 .fetch();
 
         Map<Long, List<sgn_sttn>> approvalInfoListMap = CommonUtils.listGroupBy(findApprovalInfoList, sgn_sttn::getSrKey);
+
         requestKeyList.forEach(key -> {
             List<sgn_sttn> approvalInfoList = approvalInfoListMap.get(key);
             if (approvalInfoList == null || approvalInfoList.size() < 1) return;
@@ -97,14 +99,17 @@ public class approvalServiceImpl implements approvalService {
                     .where(Qsgn_rqst.sgn_rqst.srKey.eq(currentApprTarget.getSrKey()))
                     .fetchFirst();
 
+            // 신청 상태를 진행으로 변경.
             sgnRqstDomain.setSgnStCd("2");
             sgnRqstRepository.save(sgnRqstDomain);
 
+            // 현재 결재 정보 저장.
             currentApprTarget.setSgnRsn(saveApproval.getApprovalReason());
             currentApprTarget.setSgnStCd(saveApproval.getApprovalStatusCode());
             currentApprTarget.setSgnDt(new Timestamp(System.currentTimeMillis()));
             sgnSttnRepository.save(currentApprTarget);
 
+            // 다음 결재자가 존재하는 경우 해당 결재자 상태를 대기로 변경.
             if (nextApprTarget != null) {
                 nextApprTarget.setSgnStCd("1");
                 sgnSttnRepository.save(nextApprTarget);
@@ -116,17 +121,24 @@ public class approvalServiceImpl implements approvalService {
                         .selectFrom(Qsgn_rqst.sgn_rqst)
                         .where(Qsgn_rqst.sgn_rqst.srKey.eq(key))
                         .fetchFirst();
+
                 if (lastSgnRqstDomain != null) {
                     lastSgnRqstDomain.setSgnStCd(saveApproval.getApprovalStatusCode());
                     sgnRqstRepository.save(lastSgnRqstDomain);
                 }
-                completeRequestKeyList.add(key);
             }
 
-            // 처리 여부에 대한 내용을 적어서 리턴해야한다.
+            // 승인인 경우에만 key를 저장.
+            if(Objects.equals(saveApproval.getApprovalStatusCode(), "3")) {
+                completeRequestKeyList.add(key);
+            }
         });
 
-        return new processInfo();
+        // 처리 여부에 대한 내용을 적어서 리턴해야한다.
+        processInfo result = new processInfo();
+        result.setApplicationKey(completeRequestKeyList);
+
+        return result;
     }
 
     // 신청 결재 저장 (결재자 : 관리자)
@@ -139,29 +151,109 @@ public class approvalServiceImpl implements approvalService {
         // 결재 완료 결재키 리스트
         List<Long> completeRequestKeyList = new ArrayList<>();
 
-        // 관리자 정보
-        nh_adm_info nhAdmInfo = queryFactory
-            .selectFrom(Qnh_adm_info.nh_adm_info)
-            .where(Qnh_adm_info.nh_adm_info.naiKey.eq(adminKey))
-            .fetchFirst();
-
-        // 전결자일경우 내용 적용
-        // String adminNote = "대결자 : " + nhAdmInfo.getNaiNm() + " / " + saveApproval.getApprovalReason();
-
         // 결재상황 (대기 진행만 가져오기)
         List<sgn_sttn> findApprovalInfoList = queryFactory
             .selectFrom(Qsgn_sttn.sgn_sttn)
-            .where(Qsgn_sttn.sgn_sttn.srKey.in(saveApproval.getApplicationKey()))
+            .where(Qsgn_sttn.sgn_sttn.srKey.in(requestKeyList))
             .orderBy(Qsgn_sttn.sgn_sttn.sgnStp.asc())
             .fetch();
 
         Map<Long, List<sgn_sttn>> approvalInfoListMap = CommonUtils.listGroupBy(findApprovalInfoList, sgn_sttn::getSrKey);
 
         requestKeyList.forEach(key -> {
+            List<sgn_sttn> approvalInfoList = approvalInfoListMap.get(key);
+            if (approvalInfoList == null || approvalInfoList.size() < 1) return;
 
+            // 대결자 여부 체크
+            // 현재 무조건 대결자로 들어오는중 (2022-11-15)
+            String adminCheckYn = saveApproval.getAdminCheckYn();
+
+            if ("1".equals(adminCheckYn))
+            {
+                // 전결자 -> 기존 결재리스트의 상태는 안건드리기로 함
+                // 전결이라고해도 실제 결재선에서 어디까지 결재가되었나 안되었나 체크가 필요하기에
+                // 기존 결재선의 상태는 그대로 유지
+                // 결재 신청 저장
+                sgn_rqst sgnRqstDomain = queryFactory
+                        .selectFrom(Qsgn_rqst.sgn_rqst)
+                        .where(Qsgn_rqst.sgn_rqst.srKey.eq(key))
+                        .fetchFirst();
+
+                if (sgnRqstDomain != null) {
+                    sgnRqstDomain.setSgnStCd(saveApproval.getApprovalStatusCode());
+                    sgnRqstDomain.setArbtryKey(adminKey);
+                    sgnRqstDomain.setArbtrySgnRsn(saveApproval.getApprovalReason());
+                    sgnRqstDomain.setArbtryDt(new Timestamp(System.currentTimeMillis()));
+                    sgnRqstRepository.save(sgnRqstDomain);
+                }
+
+                // 승인인 경우에만.
+                if(Objects.equals(saveApproval.getApprovalStatusCode(), "3")) {
+                    completeRequestKeyList.add(key);
+                }
+            }
+            else
+            {
+                // 로직 수정 필요 (2022-11-15)
+                // 관련 대상 저장
+                // 현재 결재 대상자가 자신이 아니면 리턴 (필터조건 : 관리자타입이면서 결재자가 자신인 대상 조회)
+                sgn_sttn currentApprTarget = approvalInfoList.stream()
+                        .filter(app -> "2".equals(app.getSgnrDvsCd()) && (Objects.equals(app.getSgnrKey(), adminKey)))
+                        .findFirst()
+                        .orElse(null);
+                if (currentApprTarget == null) return;
+
+                // 다음 결재자 조회 (현재 결재 대상자 step 보다 큰 대상자 중에 가장 처음 결재자 찾기)
+                // null 이어도 됨 (현재 결재자가 마지막 결재자인 경우)
+                sgn_sttn nextApprTarget = approvalInfoList.stream()
+                        .filter(app -> app.getSgnStp() > currentApprTarget.getSgnStp())
+                        .findFirst()
+                        .orElse(null);
+
+                // 신청 상태값 변경.
+                sgn_rqst sgnRqstDomain = queryFactory
+                        .selectFrom(Qsgn_rqst.sgn_rqst)
+                        .where(Qsgn_rqst.sgn_rqst.srKey.eq(currentApprTarget.getSrKey()))
+                        .fetchFirst();
+
+                sgnRqstDomain.setSgnStCd("2");
+                sgnRqstRepository.save(sgnRqstDomain);
+
+                currentApprTarget.setSgnRsn(saveApproval.getApprovalReason());
+                currentApprTarget.setSgnStCd(saveApproval.getApprovalStatusCode());
+                currentApprTarget.setSgnDt(new Timestamp(System.currentTimeMillis()));
+                sgnSttnRepository.save(currentApprTarget);
+
+                if (nextApprTarget != null) {
+                    nextApprTarget.setSgnStCd("1");
+                    sgnSttnRepository.save(nextApprTarget);
+                }
+
+                // 대기 진행 = 1이거나 반려일경우, 마지막 결재
+                if (Objects.equals(saveApproval.getApprovalStatusCode(), "4") || nextApprTarget == null)
+                {
+                    sgn_rqst lastSgnRqstDomain = queryFactory
+                            .selectFrom(Qsgn_rqst.sgn_rqst)
+                            .where(Qsgn_rqst.sgn_rqst.srKey.eq(key))
+                            .fetchFirst();
+
+                    if (lastSgnRqstDomain != null) {
+                        lastSgnRqstDomain.setSgnStCd(saveApproval.getApprovalStatusCode());
+                        sgnRqstRepository.save(lastSgnRqstDomain);
+                    }
+
+                    // 승인인 경우에만.
+                    if(Objects.equals(saveApproval.getApprovalStatusCode(), "3")) {
+                        completeRequestKeyList.add(key);
+                    }
+                }
+            }
         });
 
-        return new processInfo();
+        processInfo result = new processInfo();
+        result.setApplicationKey(completeRequestKeyList);
+
+        return result;
     }
 
 }
