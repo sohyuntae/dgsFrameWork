@@ -44,6 +44,14 @@ public class aopAspect {
         log.info("process message data : " + processInfo);
 
         log.info("자동 처리");
+        /* 처리 관련 데이터 처리
+        * 1. NH80에 API 생성 및 직접 결재 데이터 전달
+        *   - 두개의 서버중 하나의 서버가 죽는 경우, 문제 발생.
+        * 2. 중간에 message Service를 하나 두고 서로 통신하도록 하는 방법
+        *   - 현재 가장 가능성이 높으나. 구현에 있어서 내용을 좀 더 자세히 확인한뒤에 사용해야 할것으로 판단됨.
+        * 3. DB를 이용하는 방식.
+        *   - 결재가 완료된 데이터에 대해서 DB에 업데이트를 하고 일정시간이 되면 NH80에서 처리하는 방식 가능.
+        * */
 
         log.info("process End");
     }
